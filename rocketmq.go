@@ -126,7 +126,7 @@ func (rh *RocketHelper) NewProducer() (rocketmq.Producer, error) {
 		zap.String("groupId", opts.GroupId),
 	)
 	credentials := opts.GetCredentials()
-	return rocketmq.NewProducer(
+	p, err := rocketmq.NewProducer(
 		producer.WithNameServer([]string{opts.Endpoint}),
 		producer.WithNamespace(opts.InstanceId),
 		producer.WithInstanceName(opts.InstanceId),
@@ -139,6 +139,12 @@ func (rh *RocketHelper) NewProducer() (rocketmq.Producer, error) {
 			Credentials:  credentials,
 		}),
 	)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.Start()
+	return p, err
 }
 
 func (rh *RocketHelper) CreatePublicMessage(topic string, body []byte, tag string, keys []string, properties map[string]string) *primitive.Message {
