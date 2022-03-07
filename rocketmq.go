@@ -10,10 +10,18 @@ import (
 	"go.uber.org/zap"
 )
 
+type ConsumeFrom consumer.ConsumeFromWhere
+
+const (
+	ConsumeFromLast  ConsumeFrom = ConsumeFrom(consumer.ConsumeFromLastOffset)
+	ConsumeFromFirst ConsumeFrom = ConsumeFrom(consumer.ConsumeFromFirstOffset)
+)
+
 type RocketHelperOptions struct {
-	Endpoint        string // Aliyun RocketMQ 服务接入点
-	InstanceId      string // Aliyun RocketMQ 服务实例标识
-	GroupId         string // 客户端 Group 标识
+	Endpoint        string      // Aliyun RocketMQ 服务接入点
+	InstanceId      string      // Aliyun RocketMQ 服务实例标识
+	GroupId         string      // 客户端 Group 标识
+	ConsumeFrom     ConsumeFrom // 初次消息消费开始位置
 	AccessKeyId     string
 	AccessKeySecret string
 }
@@ -51,7 +59,7 @@ func (rh *RocketHelper) CreatePushConsumer() (rocketmq.PushConsumer, error) {
 		consumer.WithGroupName(opts.GroupId),
 		consumer.WithCredentials(opts.GetCredentials()),
 		consumer.WithConsumerModel(consumer.Clustering),
-		consumer.WithConsumeFromWhere(consumer.ConsumeFromLastOffset),
+		consumer.WithConsumeFromWhere(consumer.ConsumeFromWhere(opts.ConsumeFrom)),
 		consumer.WithConsumerOrder(true),
 	)
 }
