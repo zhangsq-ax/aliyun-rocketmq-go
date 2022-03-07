@@ -60,7 +60,7 @@ func (rh *RocketHelper) CreatePushConsumer() (rocketmq.PushConsumer, error) {
 		consumer.WithCredentials(opts.GetCredentials()),
 		consumer.WithConsumerModel(consumer.Clustering),
 		consumer.WithConsumeFromWhere(consumer.ConsumeFromWhere(opts.ConsumeFrom)),
-		consumer.WithConsumerOrder(true),
+		//consumer.WithConsumerOrder(true),
 	)
 }
 
