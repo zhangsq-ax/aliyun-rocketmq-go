@@ -77,11 +77,11 @@ func (rh *RocketHelper) getPushConsumer() (rocketmq.PushConsumer, error) {
 	return pushConsumer, nil
 }
 
-func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic string, onMessage func(*primitive.MessageExt) error) error {
+func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic string, selector consumer.MessageSelector, onMessage func(*primitive.MessageExt) error) error {
 	logs.Infow("subscribe-rocketmq",
 		zap.String("topic", topic),
 	)
-	err := c.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, messages ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
+	err := c.Subscribe(topic, selector, func(ctx context.Context, messages ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, msg := range messages {
 			logs.Debugw("received-rocketmq-message",
 				zap.Reflect("summary", map[string]interface{}{
@@ -110,12 +110,12 @@ func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic str
 	return c.Start()
 }
 
-func (rh *RocketHelper) PushConsume(topic string, onMessage func(*primitive.MessageExt) error) error {
+func (rh *RocketHelper) PushConsume(topic string, selector consumer.MessageSelector, onMessage func(*primitive.MessageExt) error) error {
 	c, err := rh.getPushConsumer()
 	if err != nil {
 		return err
 	}
-	return rh.PushConsumeByConsumer(c, topic, onMessage)
+	return rh.PushConsumeByConsumer(c, topic, selector, onMessage)
 }
 
 func (rh *RocketHelper) NewProducer() (rocketmq.Producer, error) {
