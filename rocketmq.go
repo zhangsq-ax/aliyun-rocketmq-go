@@ -110,12 +110,15 @@ func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic str
 	return c.Start()
 }
 
-func (rh *RocketHelper) PushConsume(topic string, selector consumer.MessageSelector, onMessage func(*primitive.MessageExt) error) error {
+func (rh *RocketHelper) PushConsume(topic string, tagFilter string, onMessage func(*primitive.MessageExt) error) error {
 	c, err := rh.getPushConsumer()
 	if err != nil {
 		return err
 	}
-	return rh.PushConsumeByConsumer(c, topic, selector, onMessage)
+	return rh.PushConsumeByConsumer(c, topic, consumer.MessageSelector{
+		Type:       consumer.TAG,
+		Expression: tagFilter,
+	}, onMessage)
 }
 
 func (rh *RocketHelper) NewProducer() (rocketmq.Producer, error) {
