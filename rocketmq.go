@@ -64,7 +64,7 @@ func (rh *RocketHelper) CreatePushConsumer() (rocketmq.PushConsumer, error) {
 	)
 }
 
-var pushConsumer rocketmq.PushConsumer
+/*var pushConsumer rocketmq.PushConsumer
 
 func (rh *RocketHelper) getPushConsumer() (rocketmq.PushConsumer, error) {
 	if pushConsumer == nil {
@@ -75,7 +75,7 @@ func (rh *RocketHelper) getPushConsumer() (rocketmq.PushConsumer, error) {
 		}
 	}
 	return pushConsumer, nil
-}
+}*/
 
 func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic string, selector consumer.MessageSelector, onMessage func(*primitive.MessageExt) error) error {
 	logs.Infow("subscribe-rocketmq",
@@ -111,7 +111,7 @@ func (rh *RocketHelper) PushConsumeByConsumer(c rocketmq.PushConsumer, topic str
 }
 
 func (rh *RocketHelper) PushConsume(topic string, tagFilter string, onMessage func(*primitive.MessageExt) error) error {
-	c, err := rh.getPushConsumer()
+	c, err := rh.CreatePushConsumer()
 	if err != nil {
 		return err
 	}
