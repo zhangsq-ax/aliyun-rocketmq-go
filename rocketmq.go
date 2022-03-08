@@ -60,7 +60,7 @@ func (rh *RocketHelper) CreatePushConsumer() (rocketmq.PushConsumer, error) {
 		consumer.WithCredentials(opts.GetCredentials()),
 		consumer.WithConsumerModel(consumer.Clustering),
 		consumer.WithConsumeFromWhere(consumer.ConsumeFromWhere(opts.ConsumeFrom)),
-		//consumer.WithConsumerOrder(true),
+		//consumer.WithConsumerOrder(true), // todo: why
 	)
 }
 
@@ -150,7 +150,7 @@ func (rh *RocketHelper) NewProducer() (rocketmq.Producer, error) {
 	return p, err
 }
 
-func (rh *RocketHelper) CreatePublicMessage(topic string, body []byte, tag string, keys []string, properties map[string]string) *primitive.Message {
+func (rh *RocketHelper) CreateMessage(topic string, body []byte, tag string, keys []string, properties map[string]string) *primitive.Message {
 	msg := &primitive.Message{
 		Topic: topic,
 		Body:  body,
